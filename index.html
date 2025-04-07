@@ -102,26 +102,26 @@
           <div class="grid-cell">
             <!-- <h3>Snowfall</h3> -->
             <video autoplay loop muted>
-              <source src="webpage_assets/top/snow.mp4" type="video/mp4">
+              <source src="webpage_assets/top/snow_long.mp4" type="video/mp4">
             </video>
           </div>
           <div class="grid-cell">
             <!-- <h3>Rainfall</h3> -->
             <video autoplay loop muted>
-              <source src="webpage_assets/top/rain.mp4" type="video/mp4">
+              <source src="webpage_assets/top/rain_long.mp4" type="video/mp4">
             </video>
           </div>
         </div>
         <div class="grid-row">
           <div class="grid-cell">
             <video autoplay loop muted>
-              <source src="webpage_assets/top/sand.mp4" type="video/mp4">
+              <source src="webpage_assets/top/sand_long.mp4" type="video/mp4">
             </video>
             <!-- <h3>Sandstorm</h3> -->
           </div>
           <div class="grid-cell">
             <video autoplay loop muted>
-              <source src="webpage_assets/top/fog.mp4" type="video/mp4">
+              <source src="webpage_assets/top/fog_long.mp4" type="video/mp4">
             </video>
             <!-- <h3>Fog</h3> -->
           </div>
@@ -206,7 +206,7 @@
                 <button id="truck" class="prompt_title_black_small" onclick="changeScene('truck')">Truck</button>
             </div>
             <div class="video-container">
-                <video id="videoPlayer" loop autoplay muted width="70%" class="result-video">
+                <video id="videoPlayer" loop autoplay muted width="50%" class="result-video">
                     <source src="./webpage_assets/interactive/garden/snow.mp4" type="video/mp4">
                 </video>
             </div>
@@ -271,12 +271,49 @@
 </div>
 
 <script>
+
 // Current state tracking
 let currentScene = 'garden';
 let currentEffect = 'snow';
+let isLoading = false;
+const videoCache = {};
+
+// Function to preload common videos in the background
+function preloadVideos() {
+  // Preload the initial video and a few common ones
+  const preloadList = [
+    { scene: 'garden', effect: 'snow' },
+    { scene: 'garden', effect: 'rain' },
+    { scene: 'bicycle', effect: 'snow' },
+    { scene: 'stump', effect: 'snow' }
+  ];
+  
+  preloadList.forEach(item => {
+    const videoPath = `./webpage_assets/interactive/${item.scene}/${item.effect}.mp4`;
+    if (!videoCache[videoPath]) {
+      const tempVideo = document.createElement('video');
+      tempVideo.src = videoPath;
+      tempVideo.preload = 'auto';
+      tempVideo.muted = true;
+      tempVideo.style.display = 'none';
+      
+      // Store in cache once loaded
+      tempVideo.addEventListener('loadeddata', function() {
+        videoCache[videoPath] = true;
+        // Remove element after caching
+        document.body.removeChild(tempVideo);
+      });
+      
+      // Add to DOM temporarily to trigger loading
+      document.body.appendChild(tempVideo);
+    }
+  });
+}
 
 // Function to change the scene
 function changeScene(sceneName) {
+  if (isLoading || currentScene === sceneName) return;
+  
   // Update current scene
   currentScene = sceneName;
   
@@ -296,22 +333,57 @@ function changeScene(sceneName) {
   
   // Update the video source
   updateVideoSource();
+  
+  // Preload other effects for this scene
+  preloadSceneEffects(sceneName);
+}
+
+// Preload other effects for the current scene
+function preloadSceneEffects(sceneName) {
+  const effects = ['snow', 'rain', 'sand', 'fog', 'leaves', 'feather', 'drone', 'bee', 'ufo'];
+  
+  // Preload other effects for this scene (skip the current effect)
+  effects.forEach(effect => {
+    if (effect !== currentEffect) {
+      const videoPath = `./webpage_assets/interactive/${sceneName}/${effect}.mp4`;
+      if (!videoCache[videoPath]) {
+        setTimeout(() => {
+          const tempVideo = document.createElement('video');
+          tempVideo.src = videoPath;
+          tempVideo.preload = 'auto';
+          tempVideo.muted = true;
+          tempVideo.style.display = 'none';
+          
+          // Store in cache once loaded
+          tempVideo.addEventListener('loadeddata', function() {
+            videoCache[videoPath] = true;
+            document.body.removeChild(tempVideo);
+          });
+          
+          document.body.appendChild(tempVideo);
+        }, 1000); // Delay preloading to prioritize the current video
+      }
+    }
+  });
 }
 
 function switchEffect(effectName) {
+  if (isLoading || currentEffect === effectName) return;
+  
   currentEffect = effectName;
   
-  const upperButtons = document.querySelectorAll('button[id="prompt_a"], button[id="prompt_b"], button[id="prompt_c"], button[id="prompt_d"], button[id="prompt_e"], button[id="prompt_f"], button[id="prompt_g"], button[id="prompt_h"], button[id="prompt_i"]');
-  upperButtons.forEach(button => {
+  const allButtons = document.querySelectorAll('button[id^="prompt_"]');
+  allButtons.forEach(button => {
     button.classList.remove('prompt_title_red_small');
     button.classList.add('prompt_title_blue_small');
   });
     
   const selectedButton = document.querySelector(`button[onclick="switchEffect('${effectName}')"]`);
   if (selectedButton) {
-      selectedButton.classList.remove('prompt_title_blue_small');
-      selectedButton.classList.add('prompt_title_red_small');
+    selectedButton.classList.remove('prompt_title_blue_small');
+    selectedButton.classList.add('prompt_title_red_small');
   } 
+  
   // Update the video source
   updateVideoSource();
 }
@@ -319,27 +391,81 @@ function switchEffect(effectName) {
 // Helper function to update the video source based on all current selections
 function updateVideoSource() {
   const videoPlayer = document.getElementById('videoPlayer');
+  const videoContainer = document.querySelector('.video-container');
   
-  let currentTime = videoPlayer.currentTime;
+  // Mark as loading
+  isLoading = true;
+  
+  // Store current dimensions to maintain size during loading
+  const currentWidth = videoPlayer.offsetWidth;
+  const currentHeight = videoPlayer.offsetHeight || 400; // Fallback height if not set
+  
+  // Set fixed dimensions to prevent layout shifts
+  videoPlayer.style.width = `${currentWidth}px`;
+  videoPlayer.style.height = `${currentHeight}px`;
+  
+  // Keep the current video visible while loading the new one
+  // (No fading or loading indicator)
+  
   const videoPath = `./webpage_assets/interactive/${currentScene}/${currentEffect}.mp4`;
   
-  videoPlayer.src = videoPath;
+  // Create a new video element to preload
+  const tempVideo = document.createElement('video');
+  tempVideo.src = videoPath;
+  tempVideo.preload = 'auto';
+  tempVideo.muted = true;
+  tempVideo.style.display = 'none';
   
-  videoPlayer.addEventListener('loadedmetadata', function () {
-        videoPlayer.currentTime = 0;
-        videoPlayer.removeEventListener('loadedmetadata', arguments.callee);
-
-        // After changing the video source, set the fixed height
-        setFixedHeight();
-
+  // Wait for the new video to load enough data
+  tempVideo.addEventListener('loadeddata', function() {
+    // Update the main video source
+    videoPlayer.src = videoPath;
+    
+    // Play the video once it's ready
+    videoPlayer.addEventListener('loadeddata', function onceLoaded() {
+      videoPlayer.play();
+      isLoading = false;
+      
+      // Reset dimensions to allow responsive sizing
+      setTimeout(() => {
+        videoPlayer.style.width = '';
+        videoPlayer.style.height = '';
+      }, 100);
+      
+      videoPlayer.removeEventListener('loadeddata', onceLoaded);
     });
-    videoPlayer.play();
+    
+    // Clean up the temp video element
+    document.body.removeChild(tempVideo);
+  });
+  
+  // Add to DOM to trigger loading
+  document.body.appendChild(tempVideo);
 }
 
-function setFixedHeight() {
-        const videoRow = document.getElementById('videoRow');
-        videoRow.style.height = `${videoRow.offsetHeight}px`;
-}
+// Call this when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize with default video
+  preloadVideos();
+  
+  // Add the CSS for better video container
+  const style = document.createElement('style');
+  style.textContent = `
+    .video-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      margin: 20px 0 30px 0;
+      min-height: 400px; /* Minimum height to prevent layout shifts */
+    }
+    
+    #videoPlayer {
+      background-color: #f5f5f5; /* Light background while loading */
+      object-fit: contain;
+    }
+  `;
+  document.head.appendChild(style);
+});
 </script>
 
 </body></html>
