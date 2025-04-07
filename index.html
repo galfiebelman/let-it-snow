@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Indie Flower' rel='stylesheet'>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="xdvJxvo39Ei0nahgmgXGp9DCslFea8wH789x6mmAY-A" />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta property="og:site_name" content="Let it Snow! Animating Static Gaussian Scenes With Dynamic Weather Effects" />
+    <meta property="og:type" content="video.other" />
+    <meta property="og:title" content="Let it Snow! Animating Static Gaussian Scenes With Dynamic Weather Effects" />
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="https://galfiebelman.github.io/let-it-snow/" />
+    <meta property="og:image" content="" />
+
+    <meta property="article:publisher" content="https://galfiebelman.github.io/let-it-snow/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Let it Snow! Animating Static Gaussian Scenes With Dynamic Weather Effects" />
+    <meta name="twitter:description" content="" />
+    <meta name="twitter:url" content="https://galfiebelman.github.io/let-it-snow/" />
+    <meta name="twitter:image" content="https://galfiebelman.github.io/let-it-snow/webpage_assets/thumbnail.png" />
+
+    <title>Let it Snow! Animating Static Gaussian Scenes With Dynamic Weather Effects</title>
+<!--    <link rel="icon" href="../pics/wis_logo.jpg">-->
+    <link rel="icon" href="./webpage_assets/thumbnail.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="page-container">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+    <!-- title -->
+    <h1 class="ourh1" align="center">Let it Snow!</h1>
+    <h2 class="ourh2" align="center">Animating Static Gaussian Scenes With Dynamic Weather Effects</h2>
+	
+    <!-- authors and affiliations -->
+    <section class="authors_block">
+        <div class="authors" align="center">
+            <span class="author-block"><a href="https://galfiebelman.github.io/" target="_blank">Gal Fiebelman</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://www.elor.sites.tau.ac.il/" target="_blank">Hadar Averbuch-Elor</a><sup>2</sup>,</span>
+            <span class="author-block"><a href="https://sagiebenaim.github.io/" target="_blank">Sagie Benaim</a><sup>1</sup></span>
+        </div>
+
+        <div class="affiliations" align="center">
+            <span class="author-block2"><sup>1</sup>The Hebrew University of Jerusalem, </span>
+            <span class="author-block2"><sup>2</sup>Cornell University</span>
+        </div>
+    </section>
+
+	<!-- authors and affiliations -->
+    <!-- link buttons -->
+    <div class="column has-text-centered">
+        <div class="publication-links" align="center">
+
+          <!-- arxiv link -->
+          <span class="link-block">
+            <a href="" class="paper-link" style="display: inline-block">
+                <button class="button">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </button>
+            </a>
+          </span>
+
+          <!-- Github Link. -->
+          <span class="link-block">
+            <a href="" style="display: inline-block">
+                <button class="button">
+                    <span class="icon">
+                        <i class="fa fa-github"></i>
+                    </span>
+                    <span>Code (Coming Soon)</span>
+                  </button>
+            </a>
+          </span>
+          <!-- Supp Link. -->
+          <span class="link-block">
+            <a href="supp/index.html" style="display: inline-block">
+                <button class="button">
+                    <span class="icon">
+                        <i class="fa fa-plus-square"></i>
+                    </span>
+                    <span>Supplementary Material</span>
+                  </button>
+            </a>
+          </span>
+        </div>
+    </div>
+
+
+    <div class="weather-grid">
+        <div class="grid-row">
+          <div class="grid-cell">
+            <!-- <h3>Snowfall</h3> -->
+            <video autoplay loop muted>
+              <source src="webpage_assets/top/snow.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="grid-cell">
+            <!-- <h3>Rainfall</h3> -->
+            <video autoplay loop muted>
+              <source src="webpage_assets/top/rain.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell">
+            <video autoplay loop muted>
+              <source src="webpage_assets/top/sand.mp4" type="video/mp4">
+            </video>
+            <!-- <h3>Sandstorm</h3> -->
+          </div>
+          <div class="grid-cell">
+            <video autoplay loop muted>
+              <source src="webpage_assets/top/fog.mp4" type="video/mp4">
+            </video>
+            <!-- <h3>Fog</h3> -->
+          </div>
+        </div>
+      </div>
+      
+      <style>
+.weather-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    height: auto;
+  }
+  
+  .grid-row {
+    display: flex;
+    justify-content: center; 
+  }
+  
+  .grid-cell {
+    width: 35%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .grid-cell video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+   </style>
+
+    <section class="tldr-section" width="100%">
+        <div class="intro-container has-text-justified">
+            <div class="intro-paragraph">
+                <p>
+                    <br>
+                    <span class="intro-paragraph_bold">TL;DR Our method animates static 3D Gaussian scenes with physically-based dynamic weather effects.</span><br><br>
+                    Above we illustrate our method with different weather effects applied to a static 3D Gaussian scene.
+                    Our hybrid framework enables animation of physically-based weather effects with realistic motion and appearance. 
+                </p>
+            </div>
+        </div>
+    </section> 
+
+    <!-- abstract -->
+    <section class="abstract-section" width="100%">
+        <div class="abstract-container has-text-justified">
+            <hr>
+            <h2 align="center">Abstract</h2>
+            <p class="has-text-justified">
+                3D Gaussian Splatting has recently enabled fast and photorealistic reconstruction of static 3D scenes. 
+                However, introducing dynamic elements that interact naturally with such static scenes remains challenging. 
+                Accordingly, we present a novel hybrid framework that combines Gaussian-particle representations for 
+                incorporating physically-based global weather effects into static 3D Gaussian Splatting scenes, 
+                correctly handling the interactions of dynamic elements with the static scene. We follow a three-stage process:
+                we first map static 3D Gaussians to a particle-based representation. 
+                We then introduce dynamic particles and simulate their motion using the Material Point Method (MPM). 
+                Finally, we map the simulated particles back to the Gaussian domain while introducing appearance parameters tailored for specific effects. 
+                To correctly handle the interactions of dynamic elements with the static scene, we introduce specialized collision handling techniques. 
+                Our approach supports a variety of weather effects, including snowfall, rainfall, fog, and sandstorms, and can also support falling objects,
+                all with physically plausible motion and appearance. Experiments demonstrate that our method significantly outperforms existing approaches 
+                in both visual quality and physical realism. 
+            </p>
+    </section>
+
+    <!-- interactive-section -->
+    <section class="interactive-section" width="100%">
+        <div class="abstract-container has-text-justified">
+            <hr>
+            <h2 align="center">Examples of Dynamic Effects</h2>
+            <br>
+            <div class="button-row">
+                <button id="garden" class="prompt_title_red_small" onclick="changeScene('garden')">Garden</button>
+                <button id="bicycle" class="prompt_title_black_small" onclick="changeScene('bicycle')">Bicycle</button>
+                <button id="stump" class="prompt_title_black_small" onclick="changeScene('stump')">Stump</button>
+                <button id="playground" class="prompt_title_black_small" onclick="changeScene('playground')">Playground</button>
+                <button id="truck" class="prompt_title_black_small" onclick="changeScene('truck')">Truck</button>
+            </div>
+            <div class="video-container">
+                <video id="videoPlayer" loop autoplay muted width="70%" class="result-video">
+                    <source src="./webpage_assets/interactive/garden/snow.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="button-row">
+                <button id="prompt_a" class="prompt_title_red_small" onclick="switchEffect('snow')">Snowfall</button>
+                <button id="prompt_b" class="prompt_title_blue_small" onclick="switchEffect('rain')">Rainfall</button>
+                <button id="prompt_c" class="prompt_title_blue_small" onclick="switchEffect('sand')">Sandstorm</button>
+                <button id="prompt_d" class="prompt_title_blue_small" onclick="switchEffect('fog')">Fog</button>
+            </div>
+                <div class="button-row">
+                    <button id="prompt_e" class="prompt_title_blue_small" onclick="switchEffect('leaves')">Leaves Falling</button>
+                    <button id="prompt_f" class="prompt_title_blue_small" onclick="switchEffect('feather')">Feather Falling</button>
+                    <button id="prompt_g" class="prompt_title_blue_small" onclick="switchEffect('drone')">Landing Drone</button>
+                    <button id="prompt_h" class="prompt_title_blue_small" onclick="switchEffect('bee')">Landing Bee</button>
+                    <button id="prompt_i" class="prompt_title_blue_small" onclick="switchEffect('ufo')">Landing UFO</button>
+            </div>
+            <br>
+            <p class="interactive_bold">Select a scene and then choose one of the dynamic effects to view the animation enabled by our physics-based approach.<br>
+                As illustrated in this interactive visualization, our framework animates 3D Gaussian scenes with realistic dynamic effects that naturally
+                interact with scene geometry and evolve over time.</p>
+        </div>
+    </section>
+
+    <!-- method -->
+    <section class="method-section" width="100%">
+        <div class="abstract-container">
+            <hr>
+            <h2 align="center">How does it work?</h2>
+		<br>
+            <div class="im_container has-text-justified" width="90%" align="center">
+                <img align="center" src="./webpage_assets/overview.png" alt="Overview" width="100%">
+            </div> 
+            <p class="has-text-justified">
+                <br>
+                🌍 Given a set of multi-view images, we first reconstruct a <p_stat>static</p_stat> scene using 3D Gaussian Splatting (3DGS).<br></br>
+                💡 We map the <p_stat>static</p_stat> Gaussians to the particle world and initialize <p_dyn>dynamic</p_dyn> particles and simulate them using 
+                the Material Point Method (MPM).<br></br>
+                🔍 Finally, we map the <p_stat>static</p_stat> and <p_dyn>dynamic</p_dyn> particles back to the Gaussian world and render 
+                with effect-specific appearance parameters and <p_mesh>mesh-based collision handling</p_mesh>.<br></br>
+                📋 See our paper for more details on our hybrid Gaussian-particle framework and how we apply it to enable
+                 realistic animation of physically-based weather effects in static 3D scenes.
+            </p>
+        <div class="attn-grid-vid-container">
+    </section>
+
+    <!-- <section class="ack-section" width="100%"> 
+        <div class="ack-container">
+            <hr> 
+            <h2 align="center">Acknowledgements</h2> 
+            <p> 
+				This work was supported by the Israel Science Foundation (grant no. 2510/23) and by the Alon Scholarship.
+            </p> 
+        </div> 
+    </section>  -->
+
+  <p><br>
+  </p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+
+</div>
+
+<script>
+// Current state tracking
+let currentScene = 'garden';
+let currentEffect = 'snow';
+
+// Function to change the scene
+function changeScene(sceneName) {
+  // Update current scene
+  currentScene = sceneName;
+  
+  // Reset all scene button styles
+  const sceneButtons = document.querySelectorAll('.button-row button[id="garden"], .button-row button[id="bicycle"], .button-row button[id="stump"], .button-row button[id="playground"], .button-row button[id="truck"]');
+  sceneButtons.forEach(button => {
+    button.classList.remove('prompt_title_red_small');
+    button.classList.add('prompt_title_black_small');
+  });
+  
+  // Highlight the selected scene button
+  const selectedButton = document.getElementById(sceneName);
+  if (selectedButton) {
+    selectedButton.classList.remove('prompt_title_black_small');
+    selectedButton.classList.add('prompt_title_red_small');
+  }
+  
+  // Update the video source
+  updateVideoSource();
+}
+
+function switchEffect(effectName) {
+  currentEffect = effectName;
+  
+  const upperButtons = document.querySelectorAll('button[id="prompt_a"], button[id="prompt_b"], button[id="prompt_c"], button[id="prompt_d"], button[id="prompt_e"], button[id="prompt_f"], button[id="prompt_g"], button[id="prompt_h"], button[id="prompt_i"]');
+  upperButtons.forEach(button => {
+    button.classList.remove('prompt_title_red_small');
+    button.classList.add('prompt_title_blue_small');
+  });
+    
+  const selectedButton = document.querySelector(`button[onclick="switchEffect('${effectName}')"]`);
+  if (selectedButton) {
+      selectedButton.classList.remove('prompt_title_blue_small');
+      selectedButton.classList.add('prompt_title_red_small');
+  } 
+  // Update the video source
+  updateVideoSource();
+}
+
+// Helper function to update the video source based on all current selections
+function updateVideoSource() {
+  const videoPlayer = document.getElementById('videoPlayer');
+  
+  let currentTime = videoPlayer.currentTime;
+  const videoPath = `./webpage_assets/interactive/${currentScene}/${currentEffect}.mp4`;
+  
+  videoPlayer.src = videoPath;
+  
+  videoPlayer.addEventListener('loadedmetadata', function () {
+        videoPlayer.currentTime = 0;
+        videoPlayer.removeEventListener('loadedmetadata', arguments.callee);
+
+        // After changing the video source, set the fixed height
+        setFixedHeight();
+
+    });
+    videoPlayer.play();
+}
+
+function setFixedHeight() {
+        const videoRow = document.getElementById('videoRow');
+        videoRow.style.height = `${videoRow.offsetHeight}px`;
+}
+</script>
+
+</body></html>
