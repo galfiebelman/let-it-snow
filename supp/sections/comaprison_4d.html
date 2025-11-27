@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Indie Flower' rel='stylesheet'>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Let it Snow! Animating 3D Gaussian Scenes with Dynamic Weather Effects via Physics-Guided Score Distillation</title>
+<!--    <link rel="icon" href="../pics/wis_logo.jpg">-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto Sans">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto Sans">
+    <link href="../style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <h1 align="center">Let it Snow! Animating 3D Gaussian Scenes with Dynamic Weather Effects via Physics-Guided Score Distillation</h1>
+  <h2 align="center">Supplementary Material</h2>
+	
+  <p align="center">&nbsp;</p>	
+  <h5 align="left">
+    Please click on the sections below to view our interactive results and ablations:
+  </h5>
+	<a href="#top"></a>
+  <ul>
+	<li><a href="../index.html">Our Results on Dynamic Weather Effects</a></li>
+    <li><a href="creative_text.html">Our Results on Creative Text Prompts</a></li>
+    <li><a href="comaprison_4d.html">Comparison to 4D Editing Baseline</a></li>
+	<li><a href="ablations.html">Ablations</a></li>
+    <li><a href="ablations_adaptive.html">SDS-Adaptive Weight Ablations</a></li>
+    <li><a href="ablations_reg.html">Regularization Loss Ablations</a></li>
+    <li><a href="ablations_drift.html">Trajectory Drift Ablations</a></li>
+  </ul>
+
+<!------------------ BEGIN SECTION ------------------>
+<p>&nbsp;</p>
+<hr>
+
+<h2 id="our_results_container" align="left"><a name="image-results" id="image-results"></a>Comparison to 4D Editing Baseline</h2>
+
+
+<p align="left">
+    We qualitatively compare against the Instruct-4DGS baseline. (as shown in Fig.7). <br>
+  </p>
+<br>
+<br>
+
+  <table class="result-table" width="100%" align="center">
+    <tbody>
+            <tr>
+                <th width="24%" class="video-label">Instruct-4DGS</th>
+                <th width="24%" class="video-label">Ours</th>
+                <th width="24%" class="video-label">Instruct-4DGS</th>
+                <th width="24%" class="video-label">Ours</th>
+            </tr>
+              <tr>
+                <td>
+                    <div class="video-container">
+                        <video onmouseover="this.setAttribute('controls', '');this.play();" onmouseout="this.removeAttribute('controls');this.pause()" muted width="95%"  class="result-video">
+                            <source src="../comparison/truck_sand.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </td>
+                <td>
+                    <div class="video-container">
+                        <video onmouseover="this.setAttribute('controls', '');this.play();" onmouseout="this.removeAttribute('controls');this.pause()" muted width="95%"  class="result-video">
+                            <source src="../results/truck/sand.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </td>
+                <td>
+                    <div class="video-container">
+                        <video onmouseover="this.setAttribute('controls', '');this.play();" onmouseout="this.removeAttribute('controls');this.pause()" muted width="95%"  class="result-video">
+                            <source src="../comparison/playground_snow.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </td>
+                <td>
+                    <div class="video-container">
+                        <video onmouseover="this.setAttribute('controls', '');this.play();" onmouseout="this.removeAttribute('controls');this.pause()" muted width="95%"  class="result-video">
+                            <source src="../results/playground/snow.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </td>
+                </tr>
+    </tbody>
+</div>
+
+</body></html>

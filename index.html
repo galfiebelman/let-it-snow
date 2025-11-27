@@ -9,21 +9,21 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <meta property="og:site_name" content="Let it Snow! Animating Static Gaussian Scenes With Dynamic Weather Effects" />
+    <meta property="og:site_name" content="Let it Snow! Animating 3D Gaussian Scenes with Dynamic Weather Effects via Physics-Guided Score Distillation" />
     <meta property="og:type" content="video.other" />
-    <meta property="og:title" content="Let it Snow! Animating Static Gaussian Scenes With Dynamic Weather Effects" />
+    <meta property="og:title" content="Let it Snow! Animating 3D Gaussian Scenes with Dynamic Weather Effects via Physics-Guided Score Distillation" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://galfiebelman.github.io/let-it-snow/" />
     <meta property="og:image" content="" />
 
     <meta property="article:publisher" content="https://galfiebelman.github.io/let-it-snow/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Let it Snow! Animating Static Gaussian Scenes With Dynamic Weather Effects" />
+    <meta name="twitter:title" content="Let it Snow! Animating 3D Gaussian Scenes with Dynamic Weather Effects via Physics-Guided Score Distillation" />
     <meta name="twitter:description" content="" />
     <meta name="twitter:url" content="https://galfiebelman.github.io/let-it-snow/" />
     <meta name="twitter:image" content="https://galfiebelman.github.io/let-it-snow/webpage_assets/thumbnail.png" />
 
-    <title>Let it Snow! Animating Static Gaussian Scenes With Dynamic Weather Effects</title>
+    <title>Let it Snow! Animating 3D Gaussian Scenes with Dynamic Weather Effects via Physics-Guided Score Distillation</title>
 <!--    <link rel="icon" href="../pics/wis_logo.jpg">-->
     <link rel="icon" href="./webpage_assets/thumbnail.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -38,7 +38,8 @@
 
     <!-- title -->
     <h1 class="ourh1" align="center">Let it Snow!</h1>
-    <h2 class="ourh2" align="center">Animating Static Gaussian Scenes With Dynamic Weather Effects</h2>
+    <h2 class="ourh2" align="center">Animating 3D Gaussian Scenes with Dynamic Weather Effects</h2>
+    <h3 class="ourh3" align="center">via Physics-Guided Score Distillation</h3>
 	
     <!-- authors and affiliations -->
     <section class="authors_block">
@@ -102,26 +103,26 @@
           <div class="grid-cell">
             <!-- <h3>Snowfall</h3> -->
             <video autoplay loop muted>
-              <source src="webpage_assets/top/snow.mp4" type="video/mp4">
+              <source src="webpage_assets/interactive/garden/snow.mp4" type="video/mp4">
             </video>
           </div>
           <div class="grid-cell">
             <!-- <h3>Rainfall</h3> -->
             <video autoplay loop muted>
-              <source src="webpage_assets/top/rain.mp4" type="video/mp4">
+              <source src="webpage_assets/interactive/garden/rain.mp4" type="video/mp4">
             </video>
           </div>
         </div>
         <div class="grid-row">
           <div class="grid-cell">
             <video autoplay loop muted>
-              <source src="webpage_assets/top/sand.mp4" type="video/mp4">
+              <source src="webpage_assets/interactive/garden/sand.mp4" type="video/mp4">
             </video>
             <!-- <h3>Sandstorm</h3> -->
           </div>
           <div class="grid-cell">
             <video autoplay loop muted>
-              <source src="webpage_assets/top/fog.mp4" type="video/mp4">
+              <source src="webpage_assets/interactive/garden/fog.mp4" type="video/mp4">
             </video>
             <!-- <h3>Fog</h3> -->
           </div>
@@ -163,9 +164,11 @@
             <div class="intro-paragraph">
                 <p>
                     <br>
-                    <span class="intro-paragraph_bold">TL;DR Our method animates static 3D Gaussian scenes with physically-based dynamic weather effects.</span><br><br>
-                    Above we illustrate our method with different weather effects applied to a static 3D Gaussian scene.
-                    Our hybrid framework enables animation of physically-based weather effects with realistic motion and appearance. 
+                    <span class="intro-paragraph_bold">TL;DR We introduce Physics-Guided Score Distillation to 
+                      animate static 3D Gaussian scenes with scene-wide dynamic weather effects.</span><br><br>
+                    Above, we demonstrate our framework generating effects such as snowfall, rainfall, fog, and sandstorms. 
+                    By leveraging physics simulation as a motion prior to guide Video Score Distillation Sampling (Video-SDS), 
+                    our approach jointly refines both motion and appearance, achieving physically plausible dynamics with photorealistic quality. 
                 </p>
             </div>
         </div>
@@ -175,20 +178,20 @@
     <section class="abstract-section" width="100%">
         <div class="abstract-container has-text-justified">
             <hr>
-            <h2 align="center">Abstract</h2>
+            <h2 align="center">Abstract</h2><br>
             <p class="has-text-justified">
-                3D Gaussian Splatting has recently enabled fast and photorealistic reconstruction of static 3D scenes. 
-                However, introducing dynamic elements that interact naturally with such static scenes remains challenging. 
-                Accordingly, we present a novel hybrid framework that combines Gaussian-particle representations for 
-                incorporating physically-based global weather effects into static 3D Gaussian Splatting scenes, 
-                correctly handling the interactions of dynamic elements with the static scene. We follow a three-stage process:
-                we first map static 3D Gaussians to a particle-based representation. 
-                We then introduce dynamic particles and simulate their motion using the Material Point Method (MPM). 
-                Finally, we map the simulated particles back to the Gaussian domain while introducing appearance parameters tailored for specific effects. 
-                To correctly handle the interactions of dynamic elements with the static scene, we introduce specialized collision handling techniques. 
-                Our approach supports a variety of weather effects, including snowfall, rainfall, fog, and sandstorms, and can also support falling objects,
-                all with physically plausible motion and appearance. Experiments demonstrate that our method significantly outperforms existing approaches 
-                in both visual quality and physical realism. 
+            3D Gaussian Splatting has recently enabled fast and photorealistic reconstruction of static 3D scenes. 
+            However, dynamic editing of such scenes remains a significant challenge. We introduce a novel framework, 
+            Physics-Guided Score Distillation, to address a fundamental conflict: physics simulation provides a strong 
+            motion prior that is insufficient for photorealism , while video-based Score Distillation Sampling (SDS) alone 
+            cannot generate coherent motion for complex, multi-particle scenarios. We resolve this through a unified 
+            optimization framework where physics simulation guides Score Distillation to jointly refine the motion 
+            prior for photorealism while simultaneously optimizing appearance. Specifically, we learn a neural dynamics 
+            model that predicts particle motion and appearance, optimized end-to-end via a combined loss integrating Video-SDS 
+            for photorealism with our physics-guidance prior. This allows for photorealistic refinements while ensuring the 
+            dynamics remain plausible. Our framework enables scene-wide dynamic weather effects, including snowfall, rainfall, 
+            fog, and sandstorms, with physically plausible motion. Experiments demonstrate our physics-guided approach significantly 
+            outperforms baselines, with ablations confirming this joint refinement is essential for generating coherent, high-fidelity dynamics.
             </p>
     </section>
 
@@ -196,7 +199,7 @@
     <section class="interactive-section" width="100%">
         <div class="abstract-container has-text-justified">
             <hr>
-            <h2 align="center">Examples of Dynamic Effects</h2>
+            <h2 align="center">Examples of Dynamic Weather Effects</h2>
             <br>
             <div class="button-row">
                 <button id="garden" class="prompt_title_red_small" onclick="changeScene('garden')">Garden</button>
@@ -216,18 +219,9 @@
                 <button id="prompt_c" class="prompt_title_blue_small" onclick="switchEffect('sand')">Sandstorm</button>
                 <button id="prompt_d" class="prompt_title_blue_small" onclick="switchEffect('fog')">Fog</button>
             </div>
-                <div class="button-row">
-                    <button id="prompt_e" class="prompt_title_blue_small" onclick="switchEffect('leaves')">Leaves Falling</button>
-                    <button id="prompt_f" class="prompt_title_blue_small" onclick="switchEffect('feather')">Feather Falling</button>
-                    <button id="prompt_g" class="prompt_title_blue_small" onclick="switchEffect('drone')">Landing Drone</button>
-                    <button id="prompt_h" class="prompt_title_blue_small" onclick="switchEffect('bee')">Landing Bee</button>
-                    <button id="prompt_i" class="prompt_title_blue_small" onclick="switchEffect('ufo')">Landing UFO</button>
-            </div>
             <br>
-            <p class="interactive_bold">Select a scene and then choose one of the dynamic effects to view the animation enabled by our physics-based approach.<br>
-                As illustrated in this interactive visualization, our framework animates 3D Gaussian scenes with realistic dynamic effects that naturally
-                interact with scene geometry and evolve over time.</p>
-        </div>
+        <p class="has-text-justified">Select a scene and effect to view the animation enabled by our Physics-Guided Score Distillation framework.<br>
+        Our approach generates scene-wide weather effects with continuous particle emission that naturally interact with static geometry and evolve coherently over time.</p>        </div>
     </section>
 
     <!-- method -->
@@ -235,25 +229,27 @@
         <div class="abstract-container">
             <hr>
             <h2 align="center">How does it work?</h2>
-		<br>
+		        <br>
             <div class="im_container has-text-justified" width="90%" align="center">
                 <img align="center" src="./webpage_assets/overview.png" alt="Overview" width="100%">
             </div> 
             <p class="has-text-justified">
                 <br>
-                🌍 Given a set of multi-view images, we first reconstruct a <p_stat>static</p_stat> scene using 3D Gaussian Splatting (3DGS).<br></br>
-                💡 We map the <p_stat>static</p_stat> Gaussians to the particle world and initialize <p_dyn>dynamic</p_dyn> particles and simulate them using 
-                the Material Point Method (MPM).<br></br>
-                🔍 Finally, we map the <p_stat>static</p_stat> and <p_dyn>dynamic</p_dyn> particles back to the Gaussian world and render 
-                with effect-specific appearance parameters and <p_mesh>mesh-based collision handling</p_mesh>.<br></br>
-                📋 See our paper for more details on our hybrid Gaussian-particle framework and how we apply it to enable
-                 realistic animation of physically-based weather effects in static 3D scenes.
+                🌍 Given multi-view images, we first reconstruct a <p_stat>static</p_stat> scene using 3D Gaussian Splatting (3DGS) and 
+                map it to a particle representation.<br></br>
+              💡 We introduce <p_dyn>dynamic</p_dyn> particles and simulate their motion using the Material Point Method (MPM) to 
+              generate physically plausible reference trajectories with <p_mesh>mesh-based collision handling</p_mesh>.<br></br>
+                🔍 These trajectories serve as a motion prior to guide our Neural Dynamics Model, which is optimized via Video-SDS to jointly refine 
+                both <p_dyn>motion</p_dyn>  and <p_appear> appearance</p_appear> for photorealism.<br></br>
+                📋 See our paper for details on how Physics-Guided Score Distillation leverages physics simulation to enable coherent, 
+                photorealistic scene-wide weather effects.
+
             </p>
         <div class="attn-grid-vid-container">
     </section>
 
     <!-- BibTex -->
-    <section class="bib-section" width="100%">
+    <!-- <section class="bib-section" width="100%">
       <div class="bib-container">
           <hr>
           <h2 align="center">BibTeX</h2>
@@ -270,7 +266,7 @@
               </code>
           </div> 
       </div>
-  </section>
+  </section> -->
 
   <p><br>
   </p>
