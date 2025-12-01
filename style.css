@@ -36,7 +36,7 @@ h3 {
     margin-top: 0px; /* Reduced from 40 */
     margin-bottom: 3px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: #2c3e50;
     letter-spacing: -0.5px;
 }
 
@@ -257,8 +257,8 @@ button[class^="prompt_title_"] {
 .method-container, 
 .ack-container, 
 .bib-container {
-    width: 100%; /* Use full available width of page-container */
-    max-width: 100%;
+    width: 62%; /* Use full available width of page-container */
+    /* max-width: 100%; */
     margin: 0 auto;
     margin-bottom: 30px; /* Reduced spacing between sections */
 }
@@ -334,7 +334,7 @@ button[class^="prompt_title_"] {
 .bib-container code {
     font-family: "Consolas", "Monaco", monospace;
     color: #24292e;
-    font-size: 13px;
+    font-size: 16px;
     background-color: transparent;
 }
 
