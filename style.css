@@ -11,7 +11,7 @@ body {
 h1 {
     font-family: "Noto Sans", sans-serif;
     font-size: 52px; /* Slightly smaller for tighter look */
-    color: #2c3e50;
+    color: #1a1a1a;
     letter-spacing: -1.5px;
     word-spacing: 2px;
     line-height: 1.0; /* Very tight line height */
@@ -26,7 +26,7 @@ h2 {
     margin-top: 10px; /* Reduced from 40 */
     margin-bottom: 0px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: #2c3e50;
     letter-spacing: -0.5px;
 }
 
@@ -36,7 +36,7 @@ h3 {
     margin-top: 0px; /* Reduced from 40 */
     margin-bottom: 3px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: #2c3e50;
     letter-spacing: -0.5px;
 }
 
