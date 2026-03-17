@@ -40,6 +40,16 @@ h3 {
     letter-spacing: -0.5px;
 }
 
+h4 {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 35px;
+    margin-top: 0px; /* Reduced from 40 */
+    margin-bottom: 0px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+}
+
 p {
     font-family: "Noto Sans", sans-serif;
     font-size: 17px;
@@ -347,6 +357,13 @@ button[class^="prompt_title_"] {
     }
 
     h2 {
+        font-size: 24px;
+    }
+    
+    h3 {
+        font-size: 24px;
+    }
+    h4 {
         font-size: 24px;
     }
 
