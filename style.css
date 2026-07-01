@@ -351,24 +351,48 @@ button[class^="prompt_title_"] {
 /* --- MOBILE --- */
 
 @media (max-width: 768px) {
-    h1 {
-        font-size: 32px;
-        margin-top: 20px;
+    .intro-container,
+    .abstract-container,
+    .method-container,
+    .ack-container,
+    .bib-container,
+    .tldr-section .intro-container {
+        width: 95%;
+    }
+    .page-container {
+    width: 100%;
+    padding: 0 16px;
+}
+    .video-container {
+        min-height: auto;
     }
 
-    h2 {
-        font-size: 24px;
+    p {
+    font-size: 15px;
+}
+
+    .abstract-container p,
+    .intro-paragraph p {
+        font-size: 16px;
     }
-    
-    h3 {
-        font-size: 24px;
+
+    .author-block {
+        font-size: 16px;
     }
+
+    h2, h3 {
+        font-size: 20px;
+    }
+
     h4 {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .result-video {
         width: 100%;
+    }
+    .code-container {
+        overflow-x: auto;
     }
 
     .grid-cell {
