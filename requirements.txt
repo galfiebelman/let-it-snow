@@ -1,0 +1,16 @@
+torch
+torchvision
+plyfile
+tqdm
+scipy
+numpy
+imageio
+imageio-ffmpeg
+open3d
+taichi
+opencv-python
+omegaconf
+einops
+diffusers
+transformers
+accelerate
