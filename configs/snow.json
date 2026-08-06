@@ -1,0 +1,26 @@
+{
+  "effect": "snow",
+  "appearance": {
+    "scale": 0.003,
+    "surface_scale": 0.005,
+    "opacity": 0.8,
+    "surface_offset": 0.001,
+    "colors": [0.95, 0.95, 0.97]
+  },
+  "simulation": {
+    "youngs_modulus": 0.14,
+    "poisson_ratio": 0.2,
+    "material_type": "snow",
+    "num_particles_per_emission": 1000,
+    "emission_interval": 2,
+    "initial_velocity": [0.0, -0.5, 0.0],
+    "velocity_variation": [[-0.1, 0.1], [0.0, 0.0], [-0.1, 0.1]],
+    "gravity": [0.0, -9.8, 0.0],
+    "num_simulation_steps": 500,
+    "grid_resolution": 64,
+    "active_threshold": 0.001
+  },
+  "optimization": {
+    "prompt_template": "Fluffy snowflakes are falling in a {scene_description}, accumulating on surfaces. Photorealistic, high detail"
+  }
+}

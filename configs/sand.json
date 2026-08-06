@@ -1,0 +1,26 @@
+{
+  "effect": "sand",
+  "appearance": {
+    "scale": 0.004,
+    "surface_scale": 0.005,
+    "opacity": 0.7,
+    "surface_offset": 0.001,
+    "colors": [0.76, 0.60, 0.42]
+  },
+  "simulation": {
+    "youngs_modulus": 0.08,
+    "poisson_ratio": 0.3,
+    "material_type": "sand",
+    "num_particles_per_emission": 1000,
+    "emission_interval": 2,
+    "initial_velocity": [1.0, 0.0, 0.0],
+    "velocity_variation": [[-0.2, 0.2], [-0.2, 0.2], [-0.2, 0.2]],
+    "gravity": [0.0, -9.8, 0.0],
+    "num_simulation_steps": 500,
+    "grid_resolution": 64,
+    "active_threshold": 0.001
+  },
+  "optimization": {
+    "prompt_template": "A sandstorm engulfs the {scene_description}, with swirling clouds of sand in the air and the sand accumulates on surfaces. Photorealistic, high detail"
+  }
+}

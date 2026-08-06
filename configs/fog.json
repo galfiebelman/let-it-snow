@@ -1,0 +1,26 @@
+{
+  "effect": "fog",
+  "appearance": {
+    "scale": 0.01,
+    "surface_scale": 0.005,
+    "opacity": 0.3,
+    "surface_offset": 0.001,
+    "colors": [0.85, 0.85, 0.88]
+  },
+  "simulation": {
+    "youngs_modulus": 0.08,
+    "poisson_ratio": 0.3,
+    "material_type": "water",
+    "num_particles_per_emission": 5000,
+    "emission_interval": 2,
+    "initial_velocity": [0.5, 0.0, 0.0],
+    "velocity_variation": [[-0.1, 0.1], [-0.1, 0.1], [-0.1, 0.1]],
+    "gravity": [0.5, -0.1, 0.0],
+    "num_simulation_steps": 500,
+    "grid_resolution": 64,
+    "active_threshold": 0.001
+  },
+  "optimization": {
+    "prompt_template": "Fog moving across the {scene_description}, Photorealistic, high detail"
+  }
+}
