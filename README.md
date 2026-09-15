@@ -84,7 +84,51 @@ cp output/garden_2dgs/train/ours_30000/fuse_post.ply output/garden/mesh/fuse_pos
 
 ### (Optional) Background Snow Enhancement
 
-Add gradual snow to the background with [ClimateNeRF](https://github.com/y-u-a-n-l-i/Climate_NeRF). Set up its environment per its README and link the scene at `./360/garden`, then train a NeRF, add snow, and render snowy versions of the training views:
+Add gradual snow to the background with [ClimateNeRF](https://github.com/y-u-a-n-l-i/Climate_NeRF). Set up its environment per its README and link the scene at `./360/garden`, then train a NeRF, add snow, and render snowy versions of the training views.
+
+Create `configs/Garden.txt` in the ClimateNeRF repo:
+```ini
+root_dir = ./360/garden
+dataset_name = colmap
+exp_name = garden
+batch_size = 2048
+scale = 8.0
+num_epochs = 80
+downsample = 0.25
+render_traj = True
+render_train = False
+render_rgb = True
+render_depth = False
+render_normal = True
+render_semantic = True
+sem_conf_path = ../ckpts/mmseg/segformer_mit-b5_8xb1-160k_cityscapes-1024x1024.py
+sem_ckpt_path = ../ckpts/mmseg/segformer_mit-b5_8x1_1024x1024_160k_cityscapes_20211206_072934-87a052ec.pth
+styl_img_path = ./styl_img/winter.jpg
+embed_a = True
+embed_a_len = 4
+embed_msk = False
+random_bg = True
+use_skybox = False
+```
+For rendering training views directly, `configs/Garden_snowtrain.txt` is identical except:
+```ini
+render_traj = False
+render_train = True
+```
+
+Patch ClimateNeRF's `render.py` so `--split` is honored and train-view poses are used:
+```diff
+-    dataset = dataset(split='test', **kwargs)
++    dataset = dataset(split=hparams.split, **kwargs)
+@@
+-            rays_o, rays_d = get_rays(dataset.directions.cuda(), dataset[img_idx]['pose'].cuda())
++            pose = dataset.poses[img_idx]
++            if not torch.is_tensor(pose):
++                pose = torch.FloatTensor(pose)
++            rays_o, rays_d = get_rays(dataset.directions.cuda(), pose.cuda())
+```
+
+Then train a NeRF, add snow, and render the snowy training views:
 ```bash
 # In the ClimateNeRF repo (uses its configs/Garden.txt):
 python train.py --config configs/Garden.txt
