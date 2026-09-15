@@ -19,7 +19,7 @@ class SnowEffectRenderer():
         self.simulation_dir = simulation_dir
         with open(config_path, 'r') as f:
             config = json.load(f)
-        self.config = config
+        self.config = config["appearance"] if "appearance" in config else config
         self.scene = o3d.t.geometry.RaycastingScene()
         mesh_o3d_t = o3d.io.read_triangle_mesh(mesh_path)
         self.bounds = mesh_o3d_t.get_axis_aligned_bounding_box()

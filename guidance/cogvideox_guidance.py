@@ -44,7 +44,11 @@ class CogVideoXDirectGuidance:
                 "THUDM/CogVideoX-2B",
             ),
             torch_dtype=self.weights_dtype,
-        ).to(self.device)
+        )
+        # NOTE: do NOT call .to("cuda") here. enable_model_cpu_offload() (below)
+        # manages device placement, keeping only the active submodule on the GPU.
+        # Moving the whole pipeline to CUDA first pins the transformer + VAE + text
+        # encoder resident and defeats the offload, pushing peak VRAM past 40GB.
         # Use DPM scheduler for v-prediction
         self.pipe.scheduler = CogVideoXDPMScheduler.from_config(
             self.pipe.scheduler.config
@@ -69,6 +73,10 @@ class CogVideoXDirectGuidance:
 
         if enable_sequential_cpu_offload:
             self.pipe.enable_sequential_cpu_offload()
+
+        if not (enable_model_cpu_offload or enable_sequential_cpu_offload):
+            # No offload requested: place the whole pipeline on the GPU.
+            self.pipe.to(self.device)
 
         if enable_channels_last_format:
             self.pipe.to(memory_format=torch.channels_last)

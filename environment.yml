@@ -9,12 +9,14 @@ dependencies:
   - pytorch=2.1.0
   - torchvision=0.16.0
   - pytorch-cuda=11.8
+  - cuda-toolkit=11.8.0
   - pip
   - pip:
+    - setuptools<70
     - plyfile
     - tqdm
     - scipy
-    - numpy
+    - numpy<2
     - imageio
     - imageio-ffmpeg
     - open3d
@@ -22,6 +24,8 @@ dependencies:
     - opencv-python
     - omegaconf
     - einops
-    - diffusers
-    - transformers
+    - diffusers==0.30.3
+    - transformers==4.46.3
+    - sentencepiece
     - accelerate
+    - lpips

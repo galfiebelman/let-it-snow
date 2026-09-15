@@ -17,62 +17,72 @@ from scipy.spatial.transform import Rotation as R
 
 from arguments import ModelParams, get_combined_args
 from scene.gaussian_model import GaussianModel
+from scene.dataset_readers import sceneLoadTypeCallbacks
 from utils.system_utils import searchForMaxIteration
 
 
-def point_to_plane_distance(point, plane):
-    x, y, z = point
-    A, B, C, D = plane
-    return abs(A * x + B * y + C * z + D) / np.sqrt(A**2 + B**2 + C**2)
+def up_from_cameras(train_cameras):
+    """World up direction, estimated as the mean camera image-up vector.
 
-
-def estimate_ground_plane(points, distance_threshold=0.02, ransac_n=3, num_iterations=2000):
-    """Estimate ground plane from point cloud using RANSAC.
-
-    Assumes the ground plane is the dominant horizontal plane.  We select the
-    lowest 30% of points (by y-coordinate in the original COLMAP frame) as
-    candidates, then fit a plane with RANSAC.
-
-    Returns (ground_R, ground_T) that rotate the scene so y-axis is up and the
-    ground sits near y=0.
+    The COLMAP frame is not axis-aligned, so we cannot assume any coordinate
+    axis is vertical. Each camera's image-up direction (-y in camera space)
+    points roughly toward the sky; averaging over all views is robust.
     """
-    y_vals = points[:, 1]
-    y_thresh = np.percentile(y_vals, 30)
-    low_points = points[y_vals <= y_thresh]
+    ups = [ci.R @ np.array([0.0, -1.0, 0.0]) for ci in train_cameras]
+    up = np.mean(ups, axis=0)
+    return up / np.linalg.norm(up)
+
+
+def estimate_ground_plane(points, up, distance_threshold=0.02, low_percent=30,
+                          ransac_n=3, num_iterations=2000):
+    """Estimate the ground plane via RANSAC using a data-derived up direction.
+
+    Candidate ground points are the lowest `low_percent` of points measured
+    *along `up`* (not along a fixed axis). RANSAC fits a plane to them; the
+    normal is oriented toward `up`, and a rotation is built that maps the
+    ground normal to +Y with the ground at Y=0 (the frame simulate.py expects,
+    gravity = [0, -9.8, 0]).
+
+    Returns (ground_R, ground_T, inliers).
+    """
+    height = points @ up
+    thresh = np.percentile(height, low_percent)
+    low_points = points[height <= thresh]
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(low_points)
-
     plane_model, inliers = pcd.segment_plane(
         distance_threshold=distance_threshold,
         ransac_n=ransac_n,
         num_iterations=num_iterations,
     )
 
-    origin_plane_distance = point_to_plane_distance((0, 0, 0), plane_model)
+    n = np.array(plane_model[:3], dtype=np.float64)
+    D = float(plane_model[3])
+    norm = np.linalg.norm(n)
+    n /= norm
+    D /= norm
+    if np.dot(n, up) < 0:          # orient normal toward up
+        n, D = -n, -D
 
-    plane_normal = np.array(plane_model[:3])
-    plane_normal = plane_normal / np.linalg.norm(plane_normal)
-
-    y_axis = np.array([0.0, -1.0, 0.0])
-
-    rotation_angle = np.arccos(np.clip(np.dot(plane_normal, y_axis), -1, 1))
-    rotation_axis = np.cross(plane_normal, y_axis)
-    norm = np.linalg.norm(rotation_axis)
-    if norm < 1e-8:
-        rotation_matrix = np.eye(3)
+    target = np.array([0.0, 1.0, 0.0])
+    v = np.cross(n, target)
+    s = np.linalg.norm(v)
+    c = float(np.dot(n, target))
+    if s < 1e-8:
+        ground_R = np.eye(3) if c > 0 else np.diag([1.0, -1.0, -1.0])
     else:
-        rotation_axis = rotation_axis / norm
-        axis_angle = rotation_axis * rotation_angle
-        rotation_matrix = R.from_rotvec(axis_angle).as_matrix()
+        ground_R = R.from_rotvec((v / s) * np.arccos(np.clip(c, -1, 1))).as_matrix()
 
-    ground_T = np.array([0.0, origin_plane_distance, 0.0])
+    p0 = -D * n                    # point on plane closest to origin
+    ground_T = np.array([0.0, -(ground_R @ p0)[1], 0.0])
 
-    print(f"Plane equation: {plane_model[0]:.4f}x + {plane_model[1]:.4f}y + {plane_model[2]:.4f}z + {plane_model[3]:.4f} = 0")
-    print(f"Plane normal: {plane_normal}")
+    print(f"Up direction: {np.round(up, 4)}")
+    print(f"Plane normal (oriented up): {np.round(n, 4)}   offset D={D:.4f}")
+    print(f"Angle(plane normal, up): {np.degrees(np.arccos(np.clip(np.dot(n, up), -1, 1))):.2f} deg")
     print(f"Inliers: {len(inliers)} / {len(low_points)} candidate points")
 
-    return rotation_matrix, ground_T, inliers
+    return ground_R, ground_T, inliers
 
 
 def main():
@@ -80,6 +90,8 @@ def main():
     model = ModelParams(parser, sentinel=True)
     parser.add_argument("--distance_threshold", type=float, default=0.02,
                         help="RANSAC distance threshold for ground plane estimation")
+    parser.add_argument("--low_percent", type=float, default=30,
+                        help="Percentage of lowest points (along the up direction) used as ground candidates")
     args = get_combined_args(parser)
     dataset = model.extract(args)
 
@@ -99,8 +111,11 @@ def main():
     xyz = gaussians.get_xyz.detach().cpu().numpy()
     print(f"Loaded {xyz.shape[0]} Gaussians")
 
+    scene_info = sceneLoadTypeCallbacks["Colmap"](dataset.source_path, dataset.images, dataset.eval)
+    up = up_from_cameras(scene_info.train_cameras)
+
     ground_R, ground_T, inliers = estimate_ground_plane(
-        xyz, distance_threshold=args.distance_threshold
+        xyz, up, distance_threshold=args.distance_threshold, low_percent=args.low_percent
     )
 
     editing_modifier_dict = {

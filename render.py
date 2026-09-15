@@ -162,6 +162,8 @@ def main():
                         help="Specific checkpoint file. If empty, uses latest.")
     parser.add_argument("--save_init", action="store_true",
                         help="Also save video of initial (unrefined) simulation.")
+    parser.add_argument("--no_sds", action="store_true",
+                        help="Render the raw physics simulation only (no neural refinement / no checkpoint).")
     parser.add_argument("--simulation_dir", type=str, required=True)
     parser.add_argument("--mesh_path", type=str, required=True)
     parser.add_argument("--effect_config_path", type=str, required=True)
@@ -178,19 +180,19 @@ def main():
     args = get_combined_args(parser)
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    # Find checkpoint
-    load_path = args.ckpt
-    if load_path == "":
-        load_path = find_latest_checkpoint(args.save_dir_name)
-        if load_path is None:
-            print(f"Error: No checkpoints found in {args.save_dir_name}")
+    # Find checkpoint (skipped when rendering the raw simulation only)
+    load_path = None
+    if not args.no_sds:
+        load_path = args.ckpt
+        if load_path == "":
+            load_path = find_latest_checkpoint(args.save_dir_name)
+            if load_path is None:
+                print(f"Error: No checkpoints found in {args.save_dir_name}")
+                return
+        if not os.path.exists(load_path):
+            print(f"Error: Checkpoint file not found: {load_path}")
             return
-
-    if not os.path.exists(load_path):
-        print(f"Error: Checkpoint file not found: {load_path}")
-        return
-
-    print(f"Loading checkpoint: {load_path}")
+        print(f"Loading checkpoint: {load_path}")
 
     # Load scene
     gaussians = GaussianModel(args.sh_degree, 0)
@@ -209,6 +211,15 @@ def main():
 
     bg_color = [1, 1, 1] if args.white_background else [0, 0, 0]
     background = torch.tensor(bg_color, dtype=torch.float32, device=device)
+
+    if args.no_sds:
+        # Raw physics render: only the unrefined simulation, no neural model.
+        precompute_effect_data(
+            args, train_cameras, gaussians, gs_pipeline, background,
+            effect_renderer, args.num_sim_steps, save_init=True
+        )
+        print("Raw simulation video saved (no SDS).")
+        return
 
     # Initialize models
     moving_scales, moving_opacities, moving_colors, moving_rotations = \

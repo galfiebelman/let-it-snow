@@ -1,9 +1,10 @@
 torch
 torchvision
+setuptools<70
 plyfile
 tqdm
 scipy
-numpy
+numpy<2
 imageio
 imageio-ffmpeg
 open3d
@@ -11,6 +12,8 @@ taichi
 opencv-python
 omegaconf
 einops
-diffusers
-transformers
+diffusers==0.30.3
+transformers==4.46.3
+sentencepiece
 accelerate
+lpips

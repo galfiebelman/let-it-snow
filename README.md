@@ -17,8 +17,6 @@ This is the official implementation of **Let it Snow!**
 
 # Getting Started
 
-## Installation
-
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/galfiebelman/let-it-snow.git
@@ -33,8 +31,8 @@ conda activate let-it-snow
 
 ### 3. Install submodules
 ```bash
-pip install submodules/diff-gaussian-rasterization
-pip install submodules/simple-knn
+pip install --no-build-isolation submodules/diff-gaussian-rasterization
+pip install --no-build-isolation submodules/simple-knn
 ```
 
 ### 4. Install remaining dependencies
@@ -52,29 +50,61 @@ Download and extract the Garden scene:
 ```bash
 wget http://storage.googleapis.com/gresearch/refraw360/360_v2.zip
 unzip 360_v2.zip
-mv 360_v2/garden data/garden
+mkdir -p data
+mv garden data/garden
 ```
 
 ## Step 0: Train 3DGS Scene and Prepare
 
 Train the static 3D Gaussian Splatting scene:
 ```bash
-python train.py -s data/garden -m output/garden
+python train.py -s data/garden -i images_4 -m output/garden
 ```
-
-Extract the scene mesh using [2d-gaussian-splatting](https://github.com/hbb1/2d-gaussian-splatting):
-```bash
-# In the 2d-gaussian-splatting repo:
-python render.py -m output/garden --render_depth
-python scripts/tsdf_fusion.py -m output/garden --voxel_size 0.004 --sdf_trunc 0.02 --mesh_res 1024
-```
-This produces a mesh at `output/garden/mesh/fuse_post.ply`.
 
 Estimate the ground plane for physics simulation:
 ```bash
 python prepare_scene.py -m output/garden
 ```
-This fits a plane via RANSAC on the lowest 30% of Gaussians and saves the ground alignment transform to `editing_modifier.pkl` alongside the point cloud. Adjust `--distance_threshold` (default 0.02) if the ground estimate looks off.
+This estimates the scene's up direction from the camera poses, fits a ground plane via RANSAC on the lowest `--low_percent` (default 30%) of Gaussians along that direction, and saves the ground alignment transform to `editing_modifier.pkl` alongside the point cloud. Adjust `--distance_threshold` (default 0.02) or `--low_percent` if the ground estimate looks off.
+
+Extract the scene mesh using [2d-gaussian-splatting](https://github.com/hbb1/2d-gaussian-splatting). In a separate clone of that repo, train a 2DGS model on the same scene and extract the mesh:
+```bash
+git submodule update --init --recursive
+pip install --no-build-isolation submodules/diff-surfel-rasterization
+pip install trimesh==4.3.2 mediapy
+
+python train.py -s /path/to/data/garden -i images_4 -m output/garden_2dgs
+python render.py -m output/garden_2dgs --skip_train --skip_test --mesh_res 1024
+```
+Then copy the mesh to where the pipeline expects it:
+```bash
+mkdir -p output/garden/mesh
+cp output/garden_2dgs/train/ours_30000/fuse_post.ply output/garden/mesh/fuse_post.ply
+```
+
+### (Optional) Background Snow Enhancement
+
+Add gradual snow to the background with [ClimateNeRF](https://github.com/y-u-a-n-l-i/Climate_NeRF). Set up its environment per its README and link the scene at `./360/garden`, then train a NeRF, add snow, and render snowy versions of the training views:
+```bash
+# In the ClimateNeRF repo (uses its configs/Garden.txt):
+python train.py --config configs/Garden.txt
+python make_snow.py --config configs/Garden.txt --exp_name garden-snow \
+    --weight_path ckpts/colmap/garden/epoch=79_slim.ckpt \
+    --weight_path_origin_scene ckpts/colmap/garden/epoch=79_slim.ckpt \
+    --mb_size 5.e-3 --num_epochs 20
+python render.py --config configs/Garden.txt --split train \
+    --weight_path ckpts/colmap/garden-snow/model_with_snow_slim.ckpt \
+    --simulate snow --exp_name garden-snow-trainset --mb_size 5.e-3
+```
+Assemble `data/garden_snowy` from the snowy renders (as `images_4/`, named to match the originals) plus the original `sparse/`, then finetune the background model **from the trained garden Gaussians** so it keeps the identical Gaussian count and ordering (required by the background blend):
+```bash
+# INIT_PLY loads the foreground model as the starting point; --densify_until_iter 0
+# disables densification/pruning so the point count/order is preserved.
+INIT_PLY=output/garden/point_cloud/iteration_30000/point_cloud.ply \
+python train.py -s data/garden_snowy -i images_4 -m output/garden_snowy \
+    --densify_until_iter 0
+```
+Pass `output/garden_snowy/point_cloud/iteration_30000/point_cloud.ply` as `--bg_path` to both `optimize.py` and `render.py`.
 
 ## Step 1: MPM Simulation
 
@@ -123,19 +153,6 @@ python render.py \
 ```
 
 The script automatically finds the latest checkpoint. Use `--ckpt path/to/checkpoint.pth` to specify a particular one.
-
-## Background Snow Enhancement (Optional)
-
-For the snow effect, you can enhance the background with gradual snow accumulation:
-
-1. Generate snowy versions of training views using [ClimateNeRF](https://github.com/y-u-a-n-l-i/Climate_NeRF)
-2. Finetune the 3DGS model on these images:
-   ```bash
-   python train.py -s data/garden_snowy -m output/garden_snowy
-   ```
-3. Pass the finetuned model as `--bg_path` to both `optimize.py` and `render.py`
-
-</br>
 
 # Configurations
 

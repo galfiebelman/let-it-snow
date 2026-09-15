@@ -34,6 +34,13 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
     gaussians = GaussianModel(dataset.sh_degree, dataset.distill_feature_dim)
     scene = Scene(dataset, gaussians)
     gaussians.training_setup(opt)
+    _init_ply = os.environ.get("INIT_PLY", "")
+    if _init_ply:
+        # Finetune from an existing model (e.g. background snow): keep the same
+        # Gaussians/order (run with --densify_until_iter 0), only refine appearance.
+        print(f"[finetune] loading init gaussians from {_init_ply}")
+        gaussians.load_ply(_init_ply)
+        gaussians.training_setup(opt)
     if checkpoint:
         (model_params, first_iter) = torch.load(checkpoint)
         gaussians.restore(model_params, opt)
@@ -93,7 +100,7 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
         if (iteration - 1) == debug_from:
             pipe.debug = True
 
-        render_feature_flag = (iteration < opt.update_features_until_iter)
+        render_feature_flag = (iteration < opt.update_features_until_iter) and (viewpoint_cam.feat_chw is not None)
         render_pkg = render(viewpoint_cam, gaussians, pipe, background, render_features=render_feature_flag)
     
         image = render_pkg["render"]
@@ -118,7 +125,7 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
             depth_loss = l1_loss(rendered_depth, gt_depth, mask=depth_valid_mask)
             loss = loss + depth_loss
 
-        if iteration < opt.update_features_until_iter:
+        if render_feature_flag:
             gt_clip_feat = viewpoint_cam.feat_chw.cuda()
             gt_dino_feat = viewpoint_cam.dino_feat_chw.cuda()
             rendered_feat_bhwc = F.interpolate(rendered_feat.unsqueeze(0), size=gt_clip_feat.shape[1:], mode="bilinear", align_corners=False)

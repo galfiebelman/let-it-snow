@@ -207,6 +207,7 @@ def simulate(dataset, config, output_dir, mesh_path, num_steps_override=None,
         E_scale=youngs_modulus,
         poisson_ratio=poisson_ratio,
         unbounded=True,
+        g2p2g_allowed_cfl=0.1,
     )
 
     # Add scene Gaussians as stationary material
@@ -358,7 +359,7 @@ if __name__ == "__main__":
         config=config,
         output_dir=args.output_dir,
         mesh_path=args.mesh_path,
-        num_steps_override=args.num_steps,
+        num_steps_override=getattr(args, "num_steps", None),
         enable_gui=args.enable_gui,
         mpm_step_size=args.mpm_step_size,
     )
