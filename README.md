@@ -30,7 +30,11 @@ conda activate let-it-snow
 ```
 
 ### 3. Install submodules
+These compile CUDA extensions. If your system `CUDA_HOME` points at a different
+toolkit than the environment's, point it at the conda env first so `nvcc` matches
+the pinned toolkit:
 ```bash
+export CUDA_HOME=$CONDA_PREFIX
 pip install --no-build-isolation submodules/diff-gaussian-rasterization
 pip install --no-build-isolation submodules/simple-knn
 ```

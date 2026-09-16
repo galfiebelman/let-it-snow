@@ -39,10 +39,13 @@ class SnowEffectRenderer():
         """Query surface point and normal from precomputed mesh"""
         points_tensor = o3d.core.Tensor(points, dtype=o3d.core.Dtype.Float32)
         batch_results = self.scene.compute_closest_points(points_tensor)
-        return (
-            batch_results['points'].numpy(),  # Hit point
-            batch_results['primitive_normals'].numpy()  # Surface normal
-        )
+        hit_points = batch_results['points'].numpy()
+        # Closest primitive can be a degenerate (zero-area) triangle, whose
+        # primitive_normals come back as NaN. Left unsanitized these propagate
+        # into fallen_xyz -> the neural dynamics model -> NaN regularization
+        # losses, which makes GradScaler skip every optimization step.
+        surface_normals = np.nan_to_num(batch_results['primitive_normals'].numpy())
+        return hit_points, surface_normals
 
     def precompute_moving_data(self, total_steps):
         """
